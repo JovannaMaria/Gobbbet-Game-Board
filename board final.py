@@ -18,7 +18,7 @@ class GobbletBoard:
     def __init__(self):
         # Initialize the empty board
 
-        self.board = [[deque([EMPTY_SPOT])] * 3 for _ in range(3)]
+        self.board = [[deque([EMPTY_SPOT]) for _ in range(3)] for _ in range(3)]
         
         # Block the middle spot
         #self.board[1][1] = BLOCKED_SPOT
@@ -33,7 +33,7 @@ class GobbletBoard:
     
     def is_valid_move(self, from_row, from_col, to_row, to_col,curr):
         # Check if the move is within the bounds of the board
-        if not (0 <= from_row < 5 and 0 <= from_col < 3 and
+        if not (0 <= from_row <= 5 and 0 <= from_col < 3 and
                 0 <= to_row < 3 and 0 <= to_col < 3) :
             return False
         
@@ -44,19 +44,20 @@ class GobbletBoard:
         
         # Check if new piece is moved
         if (curr=='Player 1' and 4==from_row and 0<= from_col <2):
-            x=px[from_col][0]
+            x1=px[from_col][0]
             if self.board[to_row][to_col][-1] == EMPTY_SPOT:
-                print(self.board[to_row][to_col])
+                #self.board[to_row][to_col]
                 self.board[to_row][to_col].append(px[from_col].pop())
-            elif d[x] > d[self.board[to_row][to_col][-1]]:
+            elif d[x1] > d[self.board[to_row][to_col][-1]]:
                 self.board[to_row][to_col].append(px[from_col].pop()) 
             return True
+        
         elif (curr=='Player 2' and 5==from_row and 0<= from_col <2):
-            y=py[from_col][0]
+            y1=py[from_col][0]
             if self.board[to_row][to_col][-1] == EMPTY_SPOT:
-                self.board[to_row][to_col].pop()
+                #self.board[to_row][to_col].pop()
                 self.board[to_row][to_col].append(py[from_col].pop())
-            if d[y] > d[self.board[to_row][to_col][-1]]:
+            if d[y1] > d[self.board[to_row][to_col][-1]]:
                 self.board[to_row][to_col].append(py[from_col].pop())
             return True 
         
@@ -68,16 +69,28 @@ class GobbletBoard:
             return False
         # Check if the destination spot is empty or has a smaller piece on top
         if self.board[to_row][to_col][-1] == EMPTY_SPOT:
-            self.board[to_row][to_col].pop()
-            self.board[to_row][to_col].append(self.board[from_row][from_col].pop())  
-            if len(self.board[from_row][from_col])==0:
-                self.board[from_row][from_col].append(EMPTY_SPOT)
+            if curr=='Player 1' and self.board[from_row][from_col][-1] in x:
+            #self.board[to_row][to_col].pop()
+                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())  
+            elif curr=='Player 2' and self.board[from_row][from_col][-1] in y:
+            #self.board[to_row][to_col].pop()
+                self.board[to_row][to_col].append(self.board[from_row][from_col].pop()) 
+            #if len(self.board[from_row][from_col])==0:
+            #    self.board[from_row][from_col].append(EMPTY_SPOT)
+            else: 
+                return False
             return True
         
         elif d[self.board[from_row][from_col][-1]] > d[self.board[to_row][to_col][-1]]:
-            self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
-            if len(self.board[from_row][from_col])==0:
-                self.board[from_row][from_col].append(EMPTY_SPOT)
+            if curr=='Player 1' and self.board[from_row][from_col][-1] in x:
+            #self.board[to_row][to_col].pop()
+                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+            #if len(self.board[from_row][from_col])==0:
+                #self.board[from_row][from_col].append(EMPTY_SPOT)
+            elif curr=='Player 2' and self.board[from_row][from_col][-1] in y:
+                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+            else: 
+                return False
             return True
         
         return False
