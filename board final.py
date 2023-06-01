@@ -127,7 +127,7 @@ def play_game():
     board = GobbletBoard()
     current_player = 'Player 1'
     print (" each player has 2 stacks with 3 pieces. players 1&2 can access their stack using from_row 4&5 ")
-    print("and from_col 0&2 resp. this is a 3x3 game board where row and col no. range b/w 0&2")
+    print("and from_col 0&1 resp. this is a 3x3 game board where row and col no. range b/w 0&2")
 
     while True:
         # Print the current state of the board
