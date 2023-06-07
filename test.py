@@ -5,7 +5,7 @@ import random
 EMPTY_SPOT = '-'
 BLOCKED_SPOT = 'X'
 # create dictionary
-d = {'A': 3, 'B': 2, 'C': 1, 'X': 3, 'Y': 2, 'Z': 1}
+d = {'A': 3, 'B': 2, 'C': 1, 'X': 3, 'Y': 2, 'Z': 1,'-':0}
 x = list('ABC')
 y = list('XYZ')
 # Create the stacks
@@ -22,8 +22,9 @@ class GobbletBoard:
         # Initialize the empty board
         self.board = [[deque([EMPTY_SPOT]) for _ in range(3)] for _ in range(3)]
         
-    def __repr__(self):
-        return f"GobbletBoard([[[] for _ in range(3)] for _ in range(3)])"
+        
+    #def __repr__(self):
+    #   return f"GobbletBoard([[[] for _ in range(3)] for _ in range(3)])"
 
 
     def print_board(self):
@@ -115,9 +116,9 @@ class GobbletBoard:
         if self.board[0][2][-1] in x and self.board[1][1][-1] in x and self.board[2][0][-1] in x:
             return True, 'Player 1'
         if self.board[0][0][-1] in y and self.board[1][1][-1] in y and self.board[2][2][-1] in y:
-            return True, 'Player 1'
+            return True, 'Player 2'
         if self.board[0][2][-1] in y and self.board[1][1][-1] in y and self.board[2][0][-1] in y:
-            return True, 'Player 1'
+            return True, 'Player 2'
 
         return False, ''
 
@@ -181,11 +182,7 @@ class QLearningAgent:
         self.update_q_value(state, action, new_q_value)
 
 
-def possible_actions(state):
-    # Get the possible actions for a given state
-    board = GobbletBoard()
-    board.board = eval(state)  # Convert the string representation of the board to a list
-
+def possible_actions(board):
     actions = []
     for from_row in range(6):
         for from_col in range(3):
@@ -194,7 +191,6 @@ def possible_actions(state):
                     if board.is_valid_move(from_row, from_col, to_row, to_col, 'Player 1') or \
                             board.is_valid_move(from_row, from_col, to_row, to_col, 'Player 2'):
                         actions.append((from_row, from_col, to_row, to_col))
-
     return actions
 
 
@@ -256,7 +252,7 @@ def train_agent(agent, num_episodes, alpha, gamma, epsilon):
 
             # Choose an action based on the epsilon-greedy policy
             if current_player == 'Player 1':
-                available_actions = possible_actions(str(board))
+                available_actions = possible_actions(board)
                 if not available_actions:
                     print('No available actions for Player 1. Skipping episode.')
                     break
@@ -265,7 +261,7 @@ def train_agent(agent, num_episodes, alpha, gamma, epsilon):
                     print('No available actions for the AI. Skipping episode.')
                     break
             else:
-                available_actions = possible_actions(str(board))
+                available_actions = possible_actions(board)
                 if not available_actions:
                     print('No available actions for Player 2. Skipping episode.')
                     break
@@ -304,7 +300,6 @@ epsilon = 0.2  # Define the exploration rate
 
 # Train the agent
 train_agent(agent, num_episodes, alpha, gamma, epsilon)
-
 
 # Play against the AI
 play_game(agent)
