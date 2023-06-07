@@ -35,16 +35,20 @@ class GobbletBoard:
             if not self.px[from_col]:
                 return False
             x1 = self.px[from_col][0]
-            if d[x1] > d[self.board[to_row][to_col][-1]]:
-                self.board[to_row][to_col].append(self.px[from_col].pop())
+            if self.board[to_row][to_col][-1] == EMPTY_SPOT:
+                self.board[to_row][to_col].appendleft(self.px[from_col].pop())
+            elif d[x1] > d[self.board[to_row][to_col][-1]]:
+                self.board[to_row][to_col].appendleft(self.px[from_col].pop())
             return True
 
         elif (curr == 'Player 2' and 5 == from_row and 0 <= from_col < 2):
             if not self.py[from_col]:
                 return False
             y1 = self.py[from_col][0]
-            if d[y1] > d[self.board[to_row][to_col][-1]]:
-                self.board[to_row][to_col].append(self.py[from_col].pop())
+            if self.board[to_row][to_col][-1] == EMPTY_SPOT:
+                self.board[to_row][to_col].appendleft(self.py[from_col].pop())
+            elif d[y1] > d[self.board[to_row][to_col][-1]]:
+                self.board[to_row][to_col].appendleft(self.py[from_col].pop())
             return True
 
         if not (0 <= from_row < 3 and 0 <= from_col < 3 and
@@ -56,18 +60,18 @@ class GobbletBoard:
 
         if self.board[to_row][to_col][-1] == EMPTY_SPOT:
             if curr == 'Player 1' and self.board[from_row][from_col][-1] in x:
-                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                self.board[to_row][to_col].appendleft(self.board[from_row][from_col].pop())
             elif curr == 'Player 2' and self.board[from_row][from_col][-1] in y:
-                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                self.board[to_row][to_col].appendleft(self.board[from_row][from_col].pop())
             else:
                 return False
             return True
 
         elif d[self.board[from_row][from_col][-1]] < d[self.board[to_row][to_col][-1]]:
             if curr == 'Player 1' and self.board[from_row][from_col][-1] in x:
-                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                self.board[to_row][to_col].appendleft(self.board[from_row][from_col].pop())
             elif curr == 'Player 2' and self.board[from_row][from_col][-1] in y:
-                self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                self.board[to_row][to_col].appendleft(self.board[from_row][from_col].pop())
             else:
                 return False
             return True
@@ -75,30 +79,15 @@ class GobbletBoard:
         return False
 
     def check_win_condition(self, curr):
-        # Check rows
         for row in range(3):
-            if self.board[row][0][-1] in x and self.board[row][1][-1] in x and self.board[row][2][-1] in x:
-                return True, 'Player 1'
-            if self.board[row][0][-1] in y and self.board[row][1][-1] in y and self.board[row][2][-1] in y:
-                return True, 'Player 2'
-
-        # Check columns
-        for col in range(3):
-            if self.board[0][col][-1] in x and self.board[1][col][-1] in x and self.board[2][col][-1] in x:
-                return True, 'Player 1'
-            if self.board[0][col][-1] in y and self.board[1][col][-1] in y and self.board[2][col][-1] in y:
-                return True, 'Player 2'
-
-        # Check diagonals
-        if self.board[0][0][-1] in x and self.board[1][1][-1] in x and self.board[2][2][-1] in x:
-            return True, 'Player 1'
-        if self.board[0][2][-1] in x and self.board[1][1][-1] in x and self.board[2][0][-1] in x:
-            return True, 'Player 1'
-        if self.board[0][0][-1] in y and self.board[1][1][-1] in y and self.board[2][2][-1] in y:
-            return True, 'Player 2'
-        if self.board[0][2][-1] in y and self.board[1][1][-1] in y and self.board[2][0][-1] in y:
-            return True, 'Player 2'
-
+            if self.board[row][0][-1] == self.board[row][1][-1] == self.board[row][2][-1] != EMPTY_SPOT:
+                return True
+            if self.board[0][row][-1] == self.board[1][row][-1] == self.board[2][row][-1] != EMPTY_SPOT:
+                return True
+        if self.board[0][0][-1] == self.board[1][1][-1] == self.board[2][2][-1] != EMPTY_SPOT:
+            return True
+        if self.board[0][2][-1] == self.board[1][1][-1] == self.board[2][0][-1] != EMPTY_SPOT:
+            return True
         return False
 
 
