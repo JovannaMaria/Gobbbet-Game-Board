@@ -24,53 +24,61 @@ class GobbletBoard:
         print("player2:", self.py)
 
     def is_valid_move(self, from_row, from_col, to_row, to_col, curr):
-        if not (0 <= from_row <= 5 and 0 <= from_col < 3 and
-                0 <= to_row < 3 and 0 <= to_col < 3):
+        if not (0 <= from_row <= 5 and 0 <= from_col <= 2 and
+                0 <= to_row <= 2 and 0 <= to_col <= 2):
             return False
 
         if from_row == to_row and from_col == to_col:
             return False
 
-        if (curr == 'Player 1' and 4 == from_row and 0 <= from_col < 2):
+        if (curr == 'Player 1' and 4 == from_row and 0 <= from_col <= 1):
             if not self.px[from_col]:
                 return False
-            x1 = self.px[from_col][0]
+            x1 = self.px[from_col][-1]
             if d[x1] > d[self.board[to_row][to_col][-1]]:
                 self.board[to_row][to_col].append(self.px[from_col].pop())
-            return True
+                return True
+            else:
+                return False
+            
 
-        elif (curr == 'Player 2' and 5 == from_row and 0 <= from_col < 2):
+        elif (curr == 'Player 2' and 5 == from_row and 0 <= from_col <= 1):
             if not self.py[from_col]:
                 return False
-            y1 = self.py[from_col][0]
+            y1 = self.py[from_col][-1]
             if d[y1] > d[self.board[to_row][to_col][-1]]:
                 self.board[to_row][to_col].append(self.py[from_col].pop())
-            return True
+                return True
+            else:
+                return False
 
-        if not (0 <= from_row < 3 and 0 <= from_col < 3 and
-                0 <= to_row < 3 and 0 <= to_col < 3):
+        if not (0 <= from_row <= 2 and 0 <= from_col <= 2 and
+                0 <= to_row <= 2 and 0 <= to_col <= 2):
             return False
 
         if self.board[from_row][from_col][-1] == EMPTY_SPOT:
             return False
 
-        if self.board[to_row][to_col][-1] == EMPTY_SPOT:
+        '''if self.board[to_row][to_col][-1] == EMPTY_SPOT:
             if curr == 'Player 1' and self.board[from_row][from_col][-1] in x:
                 self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
             elif curr == 'Player 2' and self.board[from_row][from_col][-1] in y:
                 self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
             else:
                 return False
-            return True
+            return True'''
 
-        elif d[self.board[from_row][from_col][-1]] < d[self.board[to_row][to_col][-1]]:
+        if d[self.board[from_row][from_col][-1]] > d[self.board[to_row][to_col][-1]]:
             if curr == 'Player 1' and self.board[from_row][from_col][-1] in x:
                 self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                return True
             elif curr == 'Player 2' and self.board[from_row][from_col][-1] in y:
                 self.board[to_row][to_col].append(self.board[from_row][from_col].pop())
+                return True
             else:
                 return False
-            return True
+        else:
+            return False
 
         return False
 
@@ -189,8 +197,8 @@ def play_game(agent):
             print("Agent chooses action:", action)
 
         from_row, from_col, to_row, to_col = action
-        valid_move = board.is_valid_move(from_row, from_col, to_row, to_col, curr)
-        if  valid_move:
+        
+        if  board.is_valid_move(from_row, from_col, to_row, to_col, curr):
             '''if curr == 'Player 1':
                 if board.board[from_row][from_col][-1] in x:
                     board.px[from_col].appendleft(board.board[from_row][from_col].pop())
